@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import scan from "./scan";
+import scan from "./scan.js";
 
 const program = new Command();
 
@@ -13,3 +13,4 @@ program
   });
 
 program.parse(process.argv);
+// TODO: add a command to send notifications
