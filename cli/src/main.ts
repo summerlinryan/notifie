@@ -9,7 +9,8 @@ program
     "Scan the specified repository folder for TODO/FIXME comments and create scheduled notifications",
   )
   .action(async (dir: string) => {
-    await scan(dir);
+    const todos = await scan(dir);
+    console.log(todos);
   });
 
 program.parse(process.argv);
