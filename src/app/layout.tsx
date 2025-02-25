@@ -1,24 +1,40 @@
+import { Inter } from "next/font/google";
+import type React from "react";
+import Footer from "~/components/footer";
+import Header from "~/components/header";
+import { ThemeProvider } from "~/components/theme-provider";
 import "~/styles/globals.css";
-
-import { GeistSans } from "geist/font/sans";
-import { type Metadata } from "next";
-
 import { TRPCReactProvider } from "~/trpc/react";
 
-export const metadata: Metadata = {
-  title: "Notifie",
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata = {
+  title: "Notifie - Turn TODOs into Notifications",
   description:
-    "Notifie is a tool that converts your TODO/FIXME comments into scheduled notifications.",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+    "Automatically scan your codebase and turn TODO/FIXME comments into scheduled notifications.",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
-      <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} bg-background text-foreground`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+        >
+          <div className="flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-grow">
+              <TRPCReactProvider>{children}</TRPCReactProvider>
+            </main>
+            <Footer />
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );

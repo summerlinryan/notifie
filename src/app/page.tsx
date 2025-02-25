@@ -1,69 +1,71 @@
+import { ArrowRight, Bell, Code, Zap } from "lucide-react";
 import Link from "next/link";
+import { Button } from "~/components/ui/button";
 
-import { LatestPost } from "~/app/_components/post";
-import { auth } from "~/server/auth";
-import { api, HydrateClient } from "~/trpc/server";
-
-export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" });
-  const session = await auth();
-
-  if (session?.user) {
-    void api.post.getLatest.prefetch();
-  }
-
+export default function Home() {
   return (
-    <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-          </h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/usage/first-steps"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
-              <div className="text-lg">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
-              </div>
-            </Link>
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/introduction"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">Documentation →</h3>
-              <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
-                to deploy it.
-              </div>
-            </Link>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
-              {hello ? hello.greeting : "Loading tRPC query..."}
+    <div className="from-background to-background/80 flex min-h-screen flex-col items-center justify-center bg-gradient-to-b py-12">
+      <section className="container px-4 md:px-6">
+        <div className="flex flex-col items-center space-y-4 text-center">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
+              Turn TODOs into Notifications
+            </h1>
+            <p className="mx-auto max-w-[700px] text-gray-400 md:text-xl">
+              Automatically scan your codebase and turn TODO/FIXME comments into
+              scheduled notifications. Never forget a task again.
             </p>
-
-            <div className="flex flex-col items-center justify-center gap-4">
-              <p className="text-center text-2xl text-white">
-                {session && <span>Logged in as {session.user?.name}</span>}
-              </p>
-              <Link
-                href={session ? "/api/auth/signout" : "/api/auth/signin"}
-                className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-              >
-                {session ? "Sign out" : "Sign in"}
-              </Link>
-            </div>
           </div>
-
-          {session?.user && <LatestPost />}
+          <div className="space-x-4">
+            <Button
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              asChild
+            >
+              <Link href="/signup">
+                Get Started <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/docs">Learn More</Link>
+            </Button>
+          </div>
         </div>
-      </main>
-    </HydrateClient>
+      </section>
+
+      <section className="container px-4 py-12 md:px-6 md:py-24 lg:py-32">
+        <div className="grid gap-6 lg:grid-cols-3 lg:gap-12">
+          <div className="flex flex-col items-center space-y-4 text-center">
+            <Zap className="h-10 w-10 text-yellow-400" />
+            <h2 className="text-primary text-2xl font-bold">
+              Automated Scanning
+            </h2>
+            <p className="text-gray-400">
+              Our CLI tool seamlessly integrates with your CI pipeline to scan
+              your codebase.
+            </p>
+          </div>
+          <div className="flex flex-col items-center space-y-4 text-center">
+            <Bell className="h-10 w-10 text-green-400" />
+            <h2 className="text-primary text-2xl font-bold">
+              Smart Notifications
+            </h2>
+            <p className="text-gray-400">
+              Receive timely reminders on Slack or Discord about your TODO and
+              FIXME comments.
+            </p>
+          </div>
+          <div className="flex flex-col items-center space-y-4 text-center">
+            <Code className="h-10 w-10 text-blue-400" />
+            <h2 className="text-primary text-2xl font-bold">
+              Developer Friendly
+            </h2>
+            <p className="text-gray-400">
+              Easy to set up and use, with minimal changes to your existing
+              workflow.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
