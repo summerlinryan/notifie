@@ -45,7 +45,7 @@ export default async function SignInPage({
   const error = (await searchParams)?.error || "";
 
   return (
-    <main className="px-4 pt-16">
+    <main className="px-4">
       <div className="flex min-h-[calc(100vh-64px)] items-center justify-center">
         <div className="w-full max-w-md overflow-hidden rounded-2xl border border-gray-700 bg-gray-800/70 shadow-xl backdrop-blur-sm">
           {/* Card Header */}

@@ -24,12 +24,13 @@ export default async function Home() {
               className="bg-primary text-primary-foreground hover:bg-primary/90"
               asChild
             >
-              <Link href={session ? "/dashboard" : "/auth/signin"}>
+              <Link
+                href={
+                  session ? "/dashboard" : "/auth/signin?callbackUrl=/dashboard"
+                }
+              >
                 Get Started <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link href="/docs">Learn More</Link>
             </Button>
           </div>
         </div>
