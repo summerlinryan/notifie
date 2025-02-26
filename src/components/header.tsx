@@ -1,10 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
+import { auth, signOut } from "~/server/auth";
 
-export default function Header() {
+export default async function Header(): Promise<JSX.Element> {
+  const session = await auth();
+
   return (
-    <header className="border-border/40 bg-background/95 supports-[backdrop-filter]:bg-background/60 w-full border-b backdrop-blur">
+    <header className="border-border/40 bg-background/95 supports-[backdrop-filter]:bg-background/60 fixed left-0 right-0 top-0 z-50 w-full border-b backdrop-blur">
       <div className="container mx-auto flex h-14 items-center justify-between">
         <div className="flex items-center space-x-6">
           <Link href="/" className="flex items-center space-x-2">
@@ -37,21 +40,33 @@ export default function Header() {
             </Link>
           </nav>
         </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="ghost"
-            className="hover:text-primary text-base hover:bg-transparent"
-            asChild
-          >
-            <Link href="/login">Log in</Link>
-          </Button>
-          <Button
-            className="bg-primary text-primary-foreground hover:bg-primary/90 glow"
-            asChild
-          >
-            <Link href="/signup">Sign up</Link>
-          </Button>
-        </div>
+
+        {!session ? (
+          <div className="flex items-center space-x-2">
+            <Button
+              className="bg-primary text-primary-foreground hover:bg-primary/90 glow"
+              asChild
+            >
+              <Link href="/auth/signin">Sign in</Link>
+            </Button>
+          </div>
+        ) : (
+          <div className="flex items-center space-x-2">
+            <form
+              action={async () => {
+                "use server";
+                await signOut({ redirectTo: "/" });
+              }}
+            >
+              <Button
+                type="submit"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 glow"
+              >
+                Sign out
+              </Button>
+            </form>
+          </div>
+        )}
       </div>
     </header>
   );

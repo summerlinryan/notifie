@@ -1,8 +1,11 @@
 import { ArrowRight, Bell, Code, Zap } from "lucide-react";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
+import { auth } from "~/server/auth";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+
   return (
     <div className="from-background to-background/80 flex min-h-screen flex-col items-center justify-center bg-gradient-to-b py-12">
       <section className="container px-4 md:px-6">
@@ -21,7 +24,7 @@ export default function Home() {
               className="bg-primary text-primary-foreground hover:bg-primary/90"
               asChild
             >
-              <Link href="/signup">
+              <Link href={session ? "/dashboard" : "/auth/signin"}>
                 Get Started <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
