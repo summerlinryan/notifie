@@ -1,10 +1,10 @@
-import Image from "next/image";
 import { FaDiscord, FaGithub, FaGoogle, FaSlack } from "react-icons/fa";
 import { IconType } from "react-icons/lib";
+import { Badge } from "~/components/ui/badge";
 import { signIn } from "~/server/auth";
 import { authConfig } from "~/server/auth/config";
 
-const providerConfig: Record<
+const providerStyleConfig: Record<
   string,
   { icon: IconType; style: string; textColor: string }
 > = {
@@ -37,7 +37,7 @@ export default async function SignInPage({
 }) {
   const getProviderConfig = (providerId: string) => {
     const id = providerId.toLowerCase();
-    return providerConfig[id] || providerConfig.default;
+    return providerStyleConfig[id] || providerStyleConfig.default;
   };
 
   const providers = authConfig.providers;
@@ -45,10 +45,9 @@ export default async function SignInPage({
   const error = (await searchParams)?.error || "";
 
   return (
-    <main className="px-4">
+    <main className="px-4 bg-background h-full">
       <div className="flex min-h-[calc(100vh-64px)] items-center justify-center">
         <div className="w-full max-w-md overflow-hidden rounded-2xl border border-gray-700 bg-gray-800/70 shadow-xl backdrop-blur-sm">
-          {/* Card Header */}
           <div className="border-b border-gray-700 bg-gray-700/50 px-8 py-5">
             <h1 className="text-center text-2xl font-bold text-white">
               Welcome
@@ -58,9 +57,7 @@ export default async function SignInPage({
             </p>
           </div>
 
-          {/* Card Body */}
           <div className="p-8">
-            {/* Error Message */}
             {error && (
               <div className="mb-6 rounded-md border border-red-900/30 bg-red-500/10 p-4 text-sm text-red-400">
                 <div className="flex items-center">
@@ -90,7 +87,6 @@ export default async function SignInPage({
               </div>
             )}
 
-            {/* Provider Buttons */}
             <div className="space-y-4">
               {providers.map((provider: any) => {
                 const config = getProviderConfig(provider.id);
@@ -110,7 +106,7 @@ export default async function SignInPage({
                     <button
                       type="submit"
                       key={provider.id}
-                      className={`flex w-full items-center justify-center rounded-md px-4 py-3 ${config?.style} ${config?.textColor} shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-offset-2 focus:ring-offset-gray-800`}
+                      className={`flex w-full items-center justify-center rounded-md px-4 py-3 ${config?.style} ${config?.textColor} shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-offset-2 focus:ring-offset-gray-800 bg-indigo-600 hover:bg-indigo-700`}
                     >
                       {IconComponent && (
                         <IconComponent className="mr-3 h-5 w-5" />
@@ -124,7 +120,6 @@ export default async function SignInPage({
               })}
             </div>
 
-            {/* Divider */}
             <div className="relative my-8">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-700"></div>
@@ -136,13 +131,11 @@ export default async function SignInPage({
               </div>
             </div>
 
-            {/* Email Form Placeholder */}
             <div className="rounded-md border border-gray-700 bg-gray-800/50 p-4 text-center text-sm text-gray-400">
               Email sign-in coming soon
             </div>
           </div>
 
-          {/* Card Footer */}
           <div className="border-t border-gray-700 bg-gray-700/30 px-8 py-4 text-center text-xs text-gray-400">
             By signing in, you agree to our{" "}
             <a href="#" className="text-indigo-400 hover:text-indigo-300">
@@ -159,16 +152,3 @@ export default async function SignInPage({
     </main>
   );
 }
-
-const ProviderImage = ({ provider }: { provider: string }): JSX.Element => {
-  return (
-    <Image
-      src={`/providers/slack.svg`}
-      alt={provider}
-      width={24}
-      height={24}
-      className="mr-2"
-      color="#5865F2"
-    />
-  );
-};

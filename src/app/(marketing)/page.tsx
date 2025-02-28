@@ -2,11 +2,8 @@ import Link from "next/link"
 import { ArrowRight, Bell, Code, Zap } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import { ModeToggle } from "~/components/mode-toggle"
-import { auth } from "~/server/auth"
 
-export default async function LandingPage() {
-  const session = await auth();
-  
+export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="container z-40 bg-background">
@@ -32,19 +29,16 @@ export default async function LandingPage() {
           </div>
           <div className="flex items-center gap-2">
             <ModeToggle />
-            
-            {!session && (
-              <Link href="/auth/signin">
-                <Button variant="outline" className="border-border">
-                  Sign In
+            <Link href="/sign-in">
+              <Button variant="outline" className="border-border">
+                Sign In
               </Button>
             </Link>
-            )}
           </div>
         </div>
       </header>
       <main className="flex-1">
-        <section className="space-y-6 pt-16 md:pt-10 lg:pt-16">
+        <section className="space-y-6 pb-8 pt-16 md:pb-12 md:pt-10 lg:py-32">
           <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
             <h1 className="font-bold text-3xl sm:text-5xl md:text-6xl lg:text-7xl">Turn TODOs into Notifications</h1>
             <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
@@ -62,12 +56,10 @@ export default async function LandingPage() {
         </section>
         <section id="features" className="container space-y-6 bg-slate-50 py-8 dark:bg-transparent md:py-12 lg:py-24">
           <div className="mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3">
-            <div className="relative overflow-hidden rounded-lg border border-border bg-background p-2 pb-4">
+            <div className="relative overflow-hidden rounded-lg border border-border bg-background p-2">
               <div className="flex h-[180px] flex-col justify-between rounded-md p-6">
-                <div className="flex justify-center mb-4">
-                  <Zap className="h-12 w-12 text-yellow-500" />
-                </div>
-                <div className="space-y-2 text-center">
+                <Zap className="h-12 w-12 text-yellow-500" />
+                <div className="space-y-2">
                   <h3 className="font-bold">Automated Scanning</h3>
                   <p className="text-sm text-muted-foreground">
                     Our CLI tool seamlessly integrates with your CI pipeline to scan your codebase.
@@ -77,10 +69,8 @@ export default async function LandingPage() {
             </div>
             <div className="relative overflow-hidden rounded-lg border border-border bg-background p-2">
               <div className="flex h-[180px] flex-col justify-between rounded-md p-6">
-                <div className="flex justify-center mb-4">
-                  <Bell className="h-12 w-12 text-green-500" />
-                </div>
-                <div className="space-y-2 text-center">
+                <Bell className="h-12 w-12 text-green-500" />
+                <div className="space-y-2">
                   <h3 className="font-bold">Smart Notifications</h3>
                   <p className="text-sm text-muted-foreground">
                     Receive timely reminders on Slack or Discord about your TODO and FIXME comments.
@@ -90,10 +80,8 @@ export default async function LandingPage() {
             </div>
             <div className="relative overflow-hidden rounded-lg border border-border bg-background p-2">
               <div className="flex h-[180px] flex-col justify-between rounded-md p-6">
-                <div className="flex justify-center mb-4">
-                  <Code className="h-12 w-12 text-blue-500" />
-                </div>
-                <div className="space-y-2 text-center">
+                <Code className="h-12 w-12 text-blue-500" />
+                <div className="space-y-2">
                   <h3 className="font-bold">Developer Friendly</h3>
                   <p className="text-sm text-muted-foreground">
                     Easy to set up and use, with minimal changes to your existing workflow.
@@ -103,7 +91,7 @@ export default async function LandingPage() {
             </div>
           </div>
         </section>
-        {/* <section id="cta" className="border-t border-border">
+        <section id="cta" className="border-t border-border">
           <div className="container flex flex-col items-center gap-4 py-12 text-center md:py-16">
             <h2 className="font-bold text-3xl leading-[1.1] sm:text-3xl md:text-5xl">
               Ready to tackle your technical debt?
@@ -122,7 +110,7 @@ export default async function LandingPage() {
               </Link>
             </div>
           </div>
-        </section> */}
+        </section>
       </main>
       <footer className="border-t border-border">
         <div className="container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0">
