@@ -1,8 +1,22 @@
-import { Sidebar } from "~/components/sidebar"
-import { ModeToggle } from "~/components/mode-toggle"
-import { Button } from "~/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "~/components/ui/card"
-import { PlusCircle, MoreHorizontal, Copy, RefreshCw, Shield } from "lucide-react"
+import {
+  Copy,
+  MoreHorizontal,
+  PlusCircle,
+  RefreshCw,
+  Shield,
+} from "lucide-react";
+import { ModeToggle } from "~/components/mode-toggle";
+import { Sidebar } from "~/components/sidebar";
+import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,10 +24,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu"
-import { Badge } from "~/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
+} from "~/components/ui/dropdown-menu";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 
 export default function ProjectsPage() {
   // Mock data for projects
@@ -29,8 +49,16 @@ export default function ProjectsPage() {
         createdAt: "2 days ago",
       },
       apiKeyHistory: [
-        { key: "sk_live_*************Rt5P", status: "revoked", revokedAt: "3 days ago" },
-        { key: "sk_live_*************9Lm2", status: "revoked", revokedAt: "1 week ago" },
+        {
+          key: "sk_live_*************Rt5P",
+          status: "revoked",
+          revokedAt: "3 days ago",
+        },
+        {
+          key: "sk_live_*************9Lm2",
+          status: "revoked",
+          revokedAt: "1 week ago",
+        },
       ],
     },
     {
@@ -51,18 +79,24 @@ export default function ProjectsPage() {
       description: "Push notifications for mobile application",
       createdAt: "2 weeks ago",
       apiKey: null,
-      apiKeyHistory: [{ key: "sk_live_*************Kp3T", status: "revoked", revokedAt: "1 day ago" }],
+      apiKeyHistory: [
+        {
+          key: "sk_live_*************Kp3T",
+          status: "revoked",
+          revokedAt: "1 day ago",
+        },
+      ],
     },
-  ]
+  ];
 
   return (
-    <div className="h-full relative">
-      <div className="hidden h-full md:flex md:w-72 md:flex-col md:fixed md:inset-y-0 z-[80] bg-background border-r border-border">
+    <div className="relative h-full">
+      <div className="z-[80] hidden h-full border-r border-border bg-background md:fixed md:inset-y-0 md:flex md:w-72 md:flex-col">
         <Sidebar />
       </div>
       <main className="md:pl-72">
         <div className="p-8">
-          <div className="flex items-center justify-between mb-8">
+          <div className="mb-8 flex items-center justify-between">
             <h2 className="text-3xl font-bold tracking-tight">Projects</h2>
             <div className="flex items-center gap-2">
               <ModeToggle />
@@ -83,14 +117,20 @@ export default function ProjectsPage() {
                         {project.name}
                         {project.apiKey && (
                           <Badge
-                            variant={project.apiKey.status === "active" ? "default" : "secondary"}
+                            variant={
+                              project.apiKey.status === "active"
+                                ? "default"
+                                : "secondary"
+                            }
                             className={
                               project.apiKey.status === "active"
                                 ? "bg-emerald-600 hover:bg-emerald-700"
                                 : "bg-neutral-600 hover:bg-neutral-700"
                             }
                           >
-                            {project.apiKey.status === "active" ? "Active" : "Inactive"}
+                            {project.apiKey.status === "active"
+                              ? "Active"
+                              : "Inactive"}
                           </Badge>
                         )}
                       </CardTitle>
@@ -108,7 +148,9 @@ export default function ProjectsPage() {
                         <DropdownMenuItem>Edit project</DropdownMenuItem>
                         <DropdownMenuItem>View analytics</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-500">Delete project</DropdownMenuItem>
+                        <DropdownMenuItem className="text-red-500">
+                          Delete project
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -116,36 +158,56 @@ export default function ProjectsPage() {
                 <CardContent>
                   <Tabs defaultValue="current-key" className="w-full">
                     <TabsList>
-                      <TabsTrigger value="current-key">Current API Key</TabsTrigger>
+                      <TabsTrigger value="current-key">
+                        Current API Key
+                      </TabsTrigger>
                       <TabsTrigger value="key-history">Key History</TabsTrigger>
                     </TabsList>
                     <TabsContent value="current-key">
                       {project.apiKey ? (
                         <div className="space-y-4">
                           <div>
-                            <h4 className="text-sm font-medium mb-2">API Key</h4>
-                            <div className="flex items-center gap-2 bg-muted p-3 rounded-md">
-                              <code className="text-sm font-mono flex-1">{project.apiKey.key}</code>
-                              <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <h4 className="mb-2 text-sm font-medium">
+                              API Key
+                            </h4>
+                            <div className="flex items-center gap-2 rounded-md bg-muted p-3">
+                              <code className="flex-1 font-mono text-sm">
+                                {project.apiKey.key}
+                              </code>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                              >
                                 <Copy className="h-4 w-4" />
                                 <span className="sr-only">Copy API key</span>
                               </Button>
                             </div>
                           </div>
                           <div className="flex flex-wrap gap-2">
-                            <Button variant="outline" size="sm" className="gap-2 border-border">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="gap-2 border-border"
+                            >
                               <RefreshCw className="h-3.5 w-3.5 text-cyan-500" />
                               Regenerate API Key
                             </Button>
-                            <Button variant="outline" size="sm" className="gap-2 border-border">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="gap-2 border-border"
+                            >
                               <Shield className="h-3.5 w-3.5 text-red-500" />
                               Revoke API Key
                             </Button>
                           </div>
                         </div>
                       ) : (
-                        <div className="text-center py-4">
-                          <p className="text-muted-foreground mb-4">No active API key for this project.</p>
+                        <div className="py-4 text-center">
+                          <p className="mb-4 text-muted-foreground">
+                            No active API key for this project.
+                          </p>
                           <Button className="gap-2 bg-indigo-600 hover:bg-indigo-700">
                             <PlusCircle className="h-4 w-4" />
                             Generate New API Key
@@ -166,9 +228,14 @@ export default function ProjectsPage() {
                           <TableBody>
                             {project.apiKeyHistory.map((historyItem, index) => (
                               <TableRow key={index}>
-                                <TableCell className="font-mono">{historyItem.key}</TableCell>
+                                <TableCell className="font-mono">
+                                  {historyItem.key}
+                                </TableCell>
                                 <TableCell>
-                                  <Badge variant="secondary" className="bg-neutral-600 hover:bg-neutral-700">
+                                  <Badge
+                                    variant="secondary"
+                                    className="bg-neutral-600 hover:bg-neutral-700"
+                                  >
                                     {historyItem.status}
                                   </Badge>
                                 </TableCell>
@@ -178,16 +245,24 @@ export default function ProjectsPage() {
                           </TableBody>
                         </Table>
                       ) : (
-                        <div className="text-center py-4">
-                          <p className="text-muted-foreground">No API key history available.</p>
+                        <div className="py-4 text-center">
+                          <p className="text-muted-foreground">
+                            No API key history available.
+                          </p>
                         </div>
                       )}
                     </TabsContent>
                   </Tabs>
                 </CardContent>
                 <CardFooter className="flex justify-between border-t border-border pt-4">
-                  <div className="text-xs text-muted-foreground">Created {project.createdAt}</div>
-                  <Button variant="default" size="sm" className="bg-indigo-600 hover:bg-indigo-700">
+                  <div className="text-xs text-muted-foreground">
+                    Created {project.createdAt}
+                  </div>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="bg-indigo-600 hover:bg-indigo-700"
+                  >
                     Manage Project
                   </Button>
                 </CardFooter>
@@ -197,6 +272,5 @@ export default function ProjectsPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }
-

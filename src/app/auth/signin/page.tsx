@@ -1,13 +1,15 @@
 import { FaDiscord, FaGithub, FaGoogle, FaSlack } from "react-icons/fa";
 import { IconType } from "react-icons/lib";
-import { Badge } from "~/components/ui/badge";
 import { signIn } from "~/server/auth";
 import { authConfig } from "~/server/auth/config";
 
-const providerStyleConfig: Record<
-  string,
-  { icon: IconType; style: string; textColor: string }
-> = {
+type ProviderStyleConfig = {
+  icon: IconType;
+  style: string;
+  textColor: string;
+};
+
+const providerStyleConfig: Record<string, ProviderStyleConfig> = {
   discord: {
     icon: FaDiscord,
     style: "bg-[#5865F2] hover:bg-[#4752C4]",
@@ -35,17 +37,19 @@ export default async function SignInPage({
 }: {
   searchParams?: Promise<{ callbackUrl?: string; error?: string }>;
 }) {
-  const getProviderConfig = (providerId: string) => {
+  const getProviderConfig = (
+    providerId: string,
+  ): ProviderStyleConfig | undefined => {
     const id = providerId.toLowerCase();
-    return providerStyleConfig[id] || providerStyleConfig.default;
+    return providerStyleConfig[id];
   };
 
   const providers = authConfig.providers;
-  const callbackUrl = (await searchParams)?.callbackUrl || "/";
-  const error = (await searchParams)?.error || "";
+  const callbackUrl = (await searchParams)?.callbackUrl ?? "/";
+  const error = (await searchParams)?.error ?? "";
 
   return (
-    <main className="px-4 bg-background h-full">
+    <main className="h-full bg-background px-4">
       <div className="flex min-h-[calc(100vh-64px)] items-center justify-center">
         <div className="w-full max-w-md overflow-hidden rounded-2xl border border-gray-700 bg-gray-800/70 shadow-xl backdrop-blur-sm">
           <div className="border-b border-gray-700 bg-gray-700/50 px-8 py-5">
@@ -106,7 +110,7 @@ export default async function SignInPage({
                     <button
                       type="submit"
                       key={provider.id}
-                      className={`flex w-full items-center justify-center rounded-md px-4 py-3 ${config?.style} ${config?.textColor} shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-offset-2 focus:ring-offset-gray-800 bg-indigo-600 hover:bg-indigo-700`}
+                      className={`flex w-full items-center justify-center rounded-md px-4 py-3 ${config?.style} ${config?.textColor} bg-indigo-600 shadow-sm transition-all duration-200 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-offset-2 focus:ring-offset-gray-800`}
                     >
                       {IconComponent && (
                         <IconComponent className="mr-3 h-5 w-5" />
