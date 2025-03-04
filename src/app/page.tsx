@@ -43,7 +43,7 @@ export default async function LandingPage() {
             <ModeToggle />
 
             {!session && (
-              <Link href="/auth/signin">
+              <Link href="/auth/signin?callbackUrl=/dashboard">
                 <Button variant="outline" className="border-border">
                   Sign In
                 </Button>
