@@ -1,8 +1,9 @@
-import { type NextRequest } from "next/server";
+import { type NextRequestWithUnkeyContext } from "@unkey/nextjs";
 import openai from "openai";
 import { env } from "process";
 import { z } from "zod";
 import { db } from "~/server/db";
+import { withUnkeyAuth } from "../unkey";
 
 const todoSchema = z.object({
   file: z.string(),
@@ -26,7 +27,7 @@ const chatClient = new openai.OpenAI({
   apiKey: env.OPENAI_API_KEY,
 });
 
-export async function POST(req: NextRequest) {
+export const POST = withUnkeyAuth(async (req: NextRequestWithUnkeyContext) => {
   const scheduleRequest = await scheduleSchema.safeParseAsync(await req.json());
   if (!scheduleRequest.success) {
     return Response.json(
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
   });
 
   return Response.json({ data: todos }, { status: 201 });
-}
+});
 
 async function calculateDeliveryTime(
   todo: z.infer<typeof todoSchema>,

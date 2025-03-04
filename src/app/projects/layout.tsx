@@ -5,8 +5,6 @@ export default async function ProjectsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Protect the projects route
   await requireAuth("/projects");
-
   return <>{children}</>;
 }
