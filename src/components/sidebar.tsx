@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { cn } from "~/lib/utils"
-import { Home, Layers, Key } from "lucide-react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-
+import { Home, Key, Layers, LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "~/lib/utils";
 const routes = [
   {
     label: "Dashboard",
@@ -24,16 +24,16 @@ const routes = [
     href: "/api-keys",
     color: "text-pink-700",
   },
-]
+];
 
 export function Sidebar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
-    <div className="space-y-4 py-4 flex flex-col h-full bg-background border-r border-border text-foreground">
-      <div className="px-3 py-2 flex-1">
-        <Link href="/dashboard" className="flex items-center pl-3 mb-10">
-          <div className="relative w-8 h-8 mr-4 rounded-full bg-indigo-600 flex items-center justify-center">
+    <div className="flex h-full flex-col space-y-4 border-r border-border bg-background py-4 text-foreground">
+      <div className="flex-1 px-3 py-2">
+        <Link href="/dashboard" className="mb-10 flex items-center pl-3">
+          <div className="relative mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600">
             <span className="font-bold text-white">N</span>
           </div>
           <h1 className="text-xl font-bold">Notifie</h1>
@@ -44,19 +44,27 @@ export function Sidebar() {
               key={route.href}
               href={route.href}
               className={cn(
-                "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:bg-muted rounded-lg transition",
+                "group flex w-full cursor-pointer justify-start rounded-lg p-3 text-sm font-medium transition hover:bg-muted",
                 pathname === route.href ? "bg-muted" : "text-muted-foreground",
               )}
             >
-              <div className="flex items-center flex-1">
-                <route.icon className={cn("h-5 w-5 mr-3", route.color)} />
+              <div className="flex flex-1 items-center">
+                <route.icon className={cn("mr-3 h-5 w-5", route.color)} />
                 {route.label}
               </div>
             </Link>
           ))}
         </div>
       </div>
+      <div
+        className="flex cursor-pointer items-center pl-3"
+        onClick={() => {
+          signOut({ redirectTo: "/" });
+        }}
+      >
+        <LogOut className="mr-3 h-5 w-5 text-red-500" />
+        Logout
+      </div>
     </div>
-  )
+  );
 }
-
