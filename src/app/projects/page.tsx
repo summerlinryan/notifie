@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Copy,
   MoreHorizontal,
@@ -5,8 +7,11 @@ import {
   RefreshCw,
   Shield,
 } from "lucide-react";
+import { useState } from "react";
+
 import { ModeToggle } from "~/components/mode-toggle";
 import { Sidebar } from "~/components/sidebar";
+import { CreateProjectDialog } from "~/components/create-project-dialog";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -36,6 +41,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 
 export default function ProjectsPage() {
+  const [createProjectOpen, setCreateProjectOpen] = useState(false);
+
   // Mock data for projects
   const projects = [
     {
@@ -100,7 +107,10 @@ export default function ProjectsPage() {
             <h2 className="text-3xl font-bold tracking-tight">Projects</h2>
             <div className="flex items-center gap-2">
               <ModeToggle />
-              <Button className="gap-2 bg-indigo-600 hover:bg-indigo-700">
+              <Button
+                className="gap-2 bg-indigo-600 hover:bg-indigo-700"
+                onClick={() => setCreateProjectOpen(true)}
+              >
                 <PlusCircle className="h-4 w-4" />
                 New Project
               </Button>
@@ -271,6 +281,11 @@ export default function ProjectsPage() {
           </div>
         </div>
       </main>
+
+      <CreateProjectDialog
+        open={createProjectOpen}
+        onOpenChange={setCreateProjectOpen}
+      />
     </div>
   );
 }
