@@ -1,5 +1,7 @@
 "use client";
 
+import { PlusCircle } from "lucide-react";
+import { useState } from "react";
 import {
   Area,
   AreaChart,
@@ -11,13 +13,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { PlusCircle } from "lucide-react";
-import { useState } from "react";
 
 import { CreateProjectDialog } from "~/components/create-project-dialog";
 import { ModeToggle } from "~/components/mode-toggle";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { createProject } from "../actions/projects";
 
 export default function DashboardPage() {
   const [createProjectOpen, setCreateProjectOpen] = useState(false);
@@ -182,10 +183,7 @@ export default function DashboardPage() {
         </div>
       </main>
 
-      <CreateProjectDialog
-        open={createProjectOpen}
-        onOpenChange={setCreateProjectOpen}
-      />
+      <CreateProjectDialog open={createProjectOpen} onSubmit={createProject} />
     </div>
   );
 }

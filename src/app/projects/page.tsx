@@ -9,9 +9,9 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
+import { CreateProjectDialog } from "~/components/create-project-dialog";
 import { ModeToggle } from "~/components/mode-toggle";
 import { Sidebar } from "~/components/sidebar";
-import { CreateProjectDialog } from "~/components/create-project-dialog";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -39,11 +39,19 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { createProject } from "../actions/projects";
+
+const handleCreateProject = async (formData: {
+  name: string;
+  description: string;
+  generateApiKey: boolean;
+}) => {
+  await createProject(formData);
+};
 
 export default function ProjectsPage() {
   const [createProjectOpen, setCreateProjectOpen] = useState(false);
 
-  // Mock data for projects
   const projects = [
     {
       id: 1,
@@ -284,7 +292,7 @@ export default function ProjectsPage() {
 
       <CreateProjectDialog
         open={createProjectOpen}
-        onOpenChange={setCreateProjectOpen}
+        onSubmit={handleCreateProject}
       />
     </div>
   );

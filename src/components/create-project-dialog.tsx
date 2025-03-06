@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { PlusCircle } from "lucide-react";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -11,7 +10,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -20,30 +18,32 @@ import { Textarea } from "~/components/ui/textarea";
 
 interface CreateProjectDialogProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onSubmit: (formData: {
+    name: string;
+    description: string;
+    generateApiKey: boolean;
+  }) => Promise<void>;
 }
 
 export function CreateProjectDialog({
   open,
-  onOpenChange,
+  onSubmit,
 }: CreateProjectDialogProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [generateApiKey, setGenerateApiKey] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    onOpenChange(false);
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    await onSubmit({ name, description, generateApiKey });
+    setIsSubmitting(false);
+    setName("");
+    setDescription("");
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button className="gap-2 bg-indigo-600 hover:bg-indigo-700">
-          <PlusCircle className="h-4 w-4" />
-          New Project
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open}>
       <DialogContent>
         <form onSubmit={handleSubmit}>
           <DialogHeader>
@@ -101,8 +101,12 @@ export function CreateProjectDialog({
             )}
           </div>
           <DialogFooter>
-            <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700">
-              Create Project
+            <Button
+              type="submit"
+              className="bg-indigo-600 hover:bg-indigo-700"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Creating..." : "Create Project"}
             </Button>
           </DialogFooter>
         </form>
