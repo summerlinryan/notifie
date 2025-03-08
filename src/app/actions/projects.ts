@@ -13,7 +13,7 @@ export async function createProject({
   name: string;
   description: string;
   generateApiKey: boolean;
-}) {
+}): Promise<{ apiKey: string | null; error: string | null }> {
   try {
     const project = await db.project.create({
       data: {
@@ -47,11 +47,11 @@ export async function createProject({
     revalidatePath("/projects");
     revalidatePath("/dashboard");
 
-    return { success: true, project, apiKey };
+    return { apiKey, error: null };
   } catch (error) {
     return {
-      success: false,
-      error: "Failed to create project or corresponding API key",
+      apiKey: null,
+      error: `Failed to create project or corresponding API key: ${error}`,
     };
   }
 }

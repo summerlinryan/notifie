@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-
-import { Button } from "~/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -11,86 +11,130 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
 import { Textarea } from "~/components/ui/textarea";
+import SubmitButton from "./submit-button";
 
 interface CreateProjectDialogProps {
   open: boolean;
-  onSubmit: (formData: {
-    name: string;
-    description: string;
-    generateApiKey: boolean;
-  }) => Promise<void>;
+  onSubmit: (formData: z.infer<typeof formSchema>) => Promise<{
+    apiKey: string | null;
+    error: string | null;
+  }>;
+  onOpenChange?: (open: boolean) => void;
 }
+
+const formSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .max(32, "Name must be less than 32 characters"),
+  description: z.string().optional(),
+  generateApiKey: z.boolean().default(true),
+});
 
 export function CreateProjectDialog({
   open,
   onSubmit,
+  onOpenChange,
 }: CreateProjectDialogProps) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [generateApiKey, setGenerateApiKey] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      generateApiKey: true,
+    },
+  });
 
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
-    await onSubmit({ name, description, generateApiKey });
-    setIsSubmitting(false);
-    setName("");
-    setDescription("");
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
+    await onSubmit(data);
+    form.reset();
+    onOpenChange?.(false);
   };
 
   return (
-    <Dialog open={open}>
-      <DialogContent>
-        <form onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle>Create New Project</DialogTitle>
-            <DialogDescription>
-              Create a new project to manage your notifications.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="name">Project Name</Label>
-              <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Enter project name"
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="description">
-                Description{" "}
-                <span className="text-muted-foreground">(optional)</span>
-              </Label>
-              <Textarea
-                id="description"
-                value={description}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                  setDescription(e.target.value)
-                }
-                placeholder="Enter project description"
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="grid gap-1.5">
-                <Label htmlFor="generate-api-key">Generate API Key</Label>
-                <p className="text-sm text-muted-foreground">
-                  Create an API key for this project
-                </p>
-              </div>
-              <Switch
-                id="generate-api-key"
-                checked={generateApiKey}
-                onCheckedChange={setGenerateApiKey}
-              />
-            </div>
-            {generateApiKey && (
+    <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Create New Project</DialogTitle>
+          <DialogDescription>
+            Create a new project to manage your notifications.
+          </DialogDescription>
+        </DialogHeader>
+
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Project Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter project name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Description{" "}
+                    <span className="text-muted-foreground">(optional)</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter project description"
+                      {...field}
+                      value={field.value || ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="generateApiKey"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                  <div className="space-y-0.5">
+                    <FormLabel>Generate API Key</FormLabel>
+                    <FormDescription>
+                      Create an API key for this project
+                    </FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            {form.watch("generateApiKey") && (
               <div className="rounded-md bg-yellow-50 p-4 text-sm text-yellow-800 dark:bg-yellow-950 dark:text-yellow-200">
                 <p>
                   Your API key will be shown only once. Make sure to save it
@@ -99,17 +143,15 @@ export function CreateProjectDialog({
                 </p>
               </div>
             )}
-          </div>
-          <DialogFooter>
-            <Button
-              type="submit"
-              className="bg-indigo-600 hover:bg-indigo-700"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Creating..." : "Create Project"}
-            </Button>
-          </DialogFooter>
-        </form>
+
+            <DialogFooter>
+              <SubmitButton
+                defaultText="Create Project"
+                pendingText="Creating..."
+              />
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

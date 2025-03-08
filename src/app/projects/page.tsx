@@ -293,6 +293,7 @@ export default function ProjectsPage() {
       <CreateProjectDialog
         open={createProjectOpen}
         onSubmit={handleCreateProject}
+        onOpenChange={setCreateProjectOpen}
       />
     </div>
   );

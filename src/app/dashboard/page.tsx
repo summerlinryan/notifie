@@ -183,7 +183,11 @@ export default function DashboardPage() {
         </div>
       </main>
 
-      <CreateProjectDialog open={createProjectOpen} onSubmit={createProject} />
+      <CreateProjectDialog
+        open={createProjectOpen}
+        onSubmit={createProject}
+        onOpenChange={setCreateProjectOpen}
+      />
     </div>
   );
 }
