@@ -12,7 +12,9 @@
     "start": "npx tsx src/main.ts scan src"
   },
   "dependencies": {
+    "axios": "^1.8.2",
     "commander": "^9.5.0",
+    "dotenv": "^16.4.7",
     "git-blame-line": "^0.2.4"
   },
   "devDependencies": {

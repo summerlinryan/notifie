@@ -1,6 +1,8 @@
 import { exec as execCallback } from "child_process";
 import { blameLine } from "git-blame-line";
 import { promisify } from "util";
+import { env } from "process";
+import axios from "axios";
 
 interface Todo {
   file: string;
@@ -11,17 +13,23 @@ interface Todo {
   target: string;
 }
 
-export default async function scan(dir: string): Promise<Todo[]> {
+export default async function scan(dir: string): Promise<void> {
+  const apiKey = env.NOTIFIE_API_KEY;
   const exec = promisify(execCallback);
   let todos: Todo[] = [];
+
+  if (!apiKey) {
+    console.error("NOTIFIE_API_KEY is not set");
+    return;
+  }
 
   try {
     // TODO: Change to use leasot lib instead of exec
     const { stdout, stderr } = await exec(`leasot -x --reporter json ${dir}`);
 
     if (stderr) {
-      console.error(`stderr: ${stderr}`);
-      return todos;
+      console.error(`Leasot error`);
+      return;
     }
 
     todos = JSON.parse(stdout) as Todo[];
@@ -31,8 +39,25 @@ export default async function scan(dir: string): Promise<Todo[]> {
       todo.target = todo.ref || blame.author;
     }
   } catch (error) {
-    console.error(`Error executing leasot: ${error}`);
+    console.error(`Error executing leasot`);
+    return;
   }
 
-  return todos;
+  const response = await axios.post(
+    `${env.NOTIFIE_API_URL}/todos`,
+    {
+      todos,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+    },
+  );
+
+  if (response.status === 201) {
+    console.log(`Todos created successfully`);
+  } else {
+    console.error(`Error creating todos`);
+  }
 }
