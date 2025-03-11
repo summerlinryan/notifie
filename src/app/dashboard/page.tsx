@@ -18,7 +18,7 @@ import { CreateProjectDialog } from "~/components/create-project-dialog";
 import { ModeToggle } from "~/components/mode-toggle";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { createProject } from "../actions/projects";
+import { createProject } from "~/app/actions/create-project";
 
 export default function DashboardPage() {
   const [createProjectOpen, setCreateProjectOpen] = useState(false);

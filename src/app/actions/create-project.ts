@@ -5,15 +5,11 @@ import { env } from "process";
 import { db } from "~/server/db";
 import unkey from "~/server/unkey";
 
-export async function createProject({
-  name,
-  description,
-  generateApiKey,
-}: {
-  name: string;
-  description: string;
-  generateApiKey: boolean;
-}): Promise<{ apiKey: string | null; error: string | null }> {
+export async function createProject(
+  name: string,
+  description: string,
+  generateApiKey: boolean,
+): Promise<{ apiKey: string | null; error: string | null }> {
   try {
     const project = await db.project.create({
       data: {

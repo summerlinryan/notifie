@@ -39,15 +39,7 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { createProject } from "../actions/projects";
-
-const handleCreateProject = async (formData: {
-  name: string;
-  description: string;
-  generateApiKey: boolean;
-}) => {
-  await createProject(formData);
-};
+import { createProject } from "../actions/create-project";
 
 export default function ProjectsPage() {
   const [createProjectOpen, setCreateProjectOpen] = useState(false);
@@ -292,7 +284,7 @@ export default function ProjectsPage() {
 
       <CreateProjectDialog
         open={createProjectOpen}
-        onSubmit={handleCreateProject}
+        onSubmit={createProject}
         onOpenChange={setCreateProjectOpen}
       />
     </div>

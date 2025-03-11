@@ -24,10 +24,15 @@ import { Input } from "~/components/ui/input";
 import { Switch } from "~/components/ui/switch";
 import { Textarea } from "~/components/ui/textarea";
 import SubmitButton from "./submit-button";
+import { useState } from "react";
 
 interface CreateProjectDialogProps {
   open: boolean;
-  onSubmit: (formData: z.infer<typeof formSchema>) => Promise<{
+  onSubmit: (
+    name: string,
+    description: string,
+    generateApiKey: boolean,
+  ) => Promise<{
     apiKey: string | null;
     error: string | null;
   }>;
@@ -48,6 +53,7 @@ export function CreateProjectDialog({
   onSubmit,
   onOpenChange,
 }: CreateProjectDialogProps) {
+  const [apiKey, setApiKey] = useState<string | null>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,9 +64,21 @@ export function CreateProjectDialog({
   });
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    await onSubmit(data);
+    const response = await onSubmit(
+      data.name,
+      data.description ?? "",
+      data.generateApiKey,
+    );
+
+    if (response.apiKey) {
+      setApiKey(response.apiKey);
+    }
+
+    if (response.error) {
+      form.setError("root", { message: response.error });
+    }
+
     form.reset();
-    onOpenChange?.(false);
   };
 
   return (
@@ -141,6 +159,36 @@ export function CreateProjectDialog({
                   securely and never share it with others. Only use this API key
                   for this project.
                 </p>
+              </div>
+            )}
+
+            {apiKey && (
+              <div className="rounded-md bg-green-50 p-4 text-sm text-green-800 dark:bg-green-950 dark:text-green-200">
+                <div className="flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="shrink-0"
+                  >
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+                  </svg>
+                  <p className="font-semibold">Your API Key is Ready</p>
+                </div>
+                <div className="mt-2">
+                  <p className="mb-2">
+                    Here's your API key - make sure to copy it now:
+                  </p>
+                  <code className="block w-full rounded bg-green-100 p-2 font-mono dark:bg-green-900">
+                    {apiKey}
+                  </code>
+                </div>
               </div>
             )}
 

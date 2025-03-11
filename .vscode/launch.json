@@ -40,6 +40,6 @@
           "uriFormat": "%s",
           "webRoot": "${workspaceFolder}"
         }
-      }
+      },
     ]
   }
