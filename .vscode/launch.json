@@ -41,5 +41,12 @@
           "webRoot": "${workspaceFolder}"
         }
       },
+      {
+        "name": "Debug CLI",
+        "type": "node-terminal",
+        "request": "launch",
+        "command": "pnpm run start",
+        "cwd": "${workspaceFolder}/cli"
+      }
     ]
   }

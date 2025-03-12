@@ -12,32 +12,34 @@ const todoSchema = z.object({
   target: z.string(),
 });
 
-const scheduleSchema = z.object({
-  apiKey: z.string(),
+const requestSchema = z.object({
   todos: z.array(todoSchema),
 });
 
-const OPENAI_SYSTEM_PROMPT = `Pretend you're in this timezone: {timeZone} and today's date and time 
+const OPENAI_SYSTEM_PROMPT = `
+Pretend you're in this timezone: {timeZone} and today's date and time 
 is {currentDate}. You are a helpful assistant that converts todo 
 comments into delivery times. Respond only with an ISO date string for when the 
 task should be completed based on the urgency in the text. If no urgency is specified, 
-default to 24 hours from now.`;
+default to 24 hours from now.
+`;
 
 const chatClient = new openai.OpenAI({
   apiKey: env.OPENAI_API_KEY,
 });
 
 export const POST = withUnkeyAuth(async (req: NextRequestWithUnkeyContext) => {
-  const scheduleRequest = await scheduleSchema.safeParseAsync(await req.json());
-  if (!scheduleRequest.success) {
+  const request = await requestSchema.safeParseAsync(await req.json());
+
+  if (!request.success) {
     return Response.json(
-      { error: `Invalid request body: ${scheduleRequest.error.message}` },
+      { error: `Invalid request body: ${request.error.message}` },
       { status: 400 },
     );
   }
 
-  const todos = await Promise.all(
-    scheduleRequest.data.todos.map(async (todo) => {
+  const todosWithDeliveryTimes = await Promise.all(
+    request.data.todos.map(async (todo) => {
       const deliverTime = await calculateDeliveryTime(todo);
       return {
         ...todo,
@@ -47,10 +49,10 @@ export const POST = withUnkeyAuth(async (req: NextRequestWithUnkeyContext) => {
   );
 
   await db.todo.createMany({
-    data: todos,
+    data: todosWithDeliveryTimes,
   });
 
-  return Response.json({ data: todos }, { status: 201 });
+  return Response.json({ data: todosWithDeliveryTimes }, { status: 201 });
 });
 
 async function calculateDeliveryTime(

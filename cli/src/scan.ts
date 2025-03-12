@@ -43,21 +43,19 @@ export default async function scan(dir: string): Promise<void> {
     return;
   }
 
-  const response = await axios.post(
-    `${env.NOTIFIE_API_URL}/todos`,
-    {
-      todos,
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
+  try {
+    await axios.post(
+      `${env.NOTIFIE_API_URL}/api/todos`,
+      {
+        todos: todos,
       },
-    },
-  );
-
-  if (response.status === 201) {
-    console.log(`Todos created successfully`);
-  } else {
-    console.error(`Error creating todos`);
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      },
+    );
+  } catch (error: any) {
+    console.error(`${error.status} ${JSON.stringify(error.response.data)}`);
   }
 }

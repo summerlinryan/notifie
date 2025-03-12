@@ -25,6 +25,8 @@ import { Switch } from "~/components/ui/switch";
 import { Textarea } from "~/components/ui/textarea";
 import SubmitButton from "./submit-button";
 import { useState } from "react";
+import { toast } from "sonner";
+import { Copy } from "lucide-react";
 
 interface CreateProjectDialogProps {
   open: boolean;
@@ -63,6 +65,21 @@ export function CreateProjectDialog({
     },
   });
 
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen) {
+      form.reset({
+        name: "",
+        description: "",
+        generateApiKey: true,
+      });
+      setApiKey(null);
+    }
+
+    if (onOpenChange) {
+      onOpenChange(newOpen);
+    }
+  };
+
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     const response = await onSubmit(
       data.name,
@@ -77,12 +94,10 @@ export function CreateProjectDialog({
     if (response.error) {
       form.setError("root", { message: response.error });
     }
-
-    form.reset();
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
+    <Dialog open={open} onOpenChange={handleOpenChange} modal={true}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Create New Project</DialogTitle>
@@ -185,9 +200,22 @@ export function CreateProjectDialog({
                   <p className="mb-2">
                     Here's your API key - make sure to copy it now:
                   </p>
-                  <code className="block w-full rounded bg-green-100 p-2 font-mono dark:bg-green-900">
-                    {apiKey}
-                  </code>
+                  <div className="relative">
+                    <code className="block w-full rounded bg-green-100 p-2 font-mono dark:bg-green-900">
+                      {apiKey}
+                    </code>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(apiKey);
+                        toast.success("API key copied to clipboard");
+                      }}
+                      className="absolute right-2 top-2 rounded bg-green-200 p-1 hover:bg-green-300 dark:bg-green-800 dark:hover:bg-green-700"
+                      title="Copy to clipboard"
+                      type="button"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

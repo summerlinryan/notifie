@@ -19,6 +19,7 @@ import { ModeToggle } from "~/components/mode-toggle";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { createProject } from "~/app/actions/create-project";
+import { toast } from "sonner";
 
 export default function DashboardPage() {
   const [createProjectOpen, setCreateProjectOpen] = useState(false);
