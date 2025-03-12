@@ -43,9 +43,11 @@ export default async function scan(dir: string): Promise<void> {
     return;
   }
 
+  const notifieApiUrl = env.NOTIFIE_API_URL || "https://notifie.app";
+
   try {
     await axios.post(
-      `${env.NOTIFIE_API_URL}/api/todos`,
+      `${notifieApiUrl}/api/todos`,
       {
         todos: todos,
       },
