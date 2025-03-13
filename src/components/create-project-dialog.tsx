@@ -1,7 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Copy, Shield } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import {
   Dialog,
@@ -23,21 +26,11 @@ import {
 import { Input } from "~/components/ui/input";
 import { Switch } from "~/components/ui/switch";
 import { Textarea } from "~/components/ui/textarea";
+import { api } from "~/trpc/react";
 import SubmitButton from "./submit-button";
-import { useState } from "react";
-import { toast } from "sonner";
-import { Copy } from "lucide-react";
 
 interface CreateProjectDialogProps {
   open: boolean;
-  onSubmit: (
-    name: string,
-    description: string,
-    generateApiKey: boolean,
-  ) => Promise<{
-    apiKey: string | null;
-    error: string | null;
-  }>;
   onOpenChange?: (open: boolean) => void;
 }
 
@@ -52,10 +45,29 @@ const formSchema = z.object({
 
 export function CreateProjectDialog({
   open,
-  onSubmit,
   onOpenChange,
 }: CreateProjectDialogProps) {
   const [apiKey, setApiKey] = useState<string | null>(null);
+  const utils = api.useUtils();
+
+  const createProject = api.projects.create.useMutation({
+    onSuccess: (data) => {
+      if (data.success) {
+        toast.success("Project created successfully");
+        if (data.apiKey) {
+          setApiKey(data.apiKey);
+        }
+
+        utils.projects.getAll.invalidate();
+      } else {
+        toast.error(data.error || "Failed to create project");
+      }
+    },
+    onError: (error) => {
+      toast.error(`Error: ${error.message}`);
+    },
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -81,19 +93,11 @@ export function CreateProjectDialog({
   };
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    const response = await onSubmit(
-      data.name,
-      data.description ?? "",
-      data.generateApiKey,
-    );
-
-    if (response.apiKey) {
-      setApiKey(response.apiKey);
-    }
-
-    if (response.error) {
-      form.setError("root", { message: response.error });
-    }
+    createProject.mutate({
+      name: data.name,
+      description: data.description,
+      generateApiKey: data.generateApiKey,
+    });
   };
 
   return (
@@ -180,20 +184,7 @@ export function CreateProjectDialog({
             {apiKey && (
               <div className="rounded-md bg-green-50 p-4 text-sm text-green-800 dark:bg-green-950 dark:text-green-200">
                 <div className="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="shrink-0"
-                  >
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
-                  </svg>
+                  <Shield className="h-4 w-4 shrink-0" />
                   <p className="font-semibold">Your API Key is Ready</p>
                 </div>
                 <div className="mt-2">

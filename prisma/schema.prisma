@@ -60,6 +60,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   posts         Post[]
+  Projects      Project[]
 }
 
 model VerificationToken {
@@ -89,6 +90,8 @@ model Project {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   apiKeys     ApiKey[]
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
 }
 
 model ApiKey {

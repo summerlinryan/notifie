@@ -1,6 +1,5 @@
 "use client";
 
-import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 import {
   Area,
@@ -16,10 +15,7 @@ import {
 
 import { CreateProjectDialog } from "~/components/create-project-dialog";
 import { ModeToggle } from "~/components/mode-toggle";
-import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { createProject } from "~/app/actions/create-project";
-import { toast } from "sonner";
 
 export default function DashboardPage() {
   const [createProjectOpen, setCreateProjectOpen] = useState(false);
@@ -77,13 +73,6 @@ export default function DashboardPage() {
             <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
             <div className="flex items-center gap-2">
               <ModeToggle />
-              <Button
-                className="gap-2 bg-indigo-600 hover:bg-indigo-700"
-                onClick={() => setCreateProjectOpen(true)}
-              >
-                <PlusCircle className="h-4 w-4" />
-                New Project
-              </Button>
             </div>
           </div>
 
@@ -186,7 +175,6 @@ export default function DashboardPage() {
 
       <CreateProjectDialog
         open={createProjectOpen}
-        onSubmit={createProject}
         onOpenChange={setCreateProjectOpen}
       />
     </div>
