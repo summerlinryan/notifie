@@ -27,18 +27,6 @@ export default async function LandingPage() {
                 >
                   Features
                 </Link>
-                <Link
-                  href="#pricing"
-                  className="flex items-center text-lg font-medium text-muted-foreground"
-                >
-                  Pricing
-                </Link>
-                <Link
-                  href="/docs"
-                  className="flex items-center text-lg font-medium text-muted-foreground"
-                >
-                  Docs
-                </Link>
               </nav>
             </div>
             <div className="flex items-center gap-2">
@@ -55,7 +43,7 @@ export default async function LandingPage() {
           </div>
         </header>
         <main className="flex-1">
-          <section className="space-y-6 pt-16 md:pt-10 lg:pb-32 lg:pt-24">
+          <section className="space-y-6 pt-16 md:pt-10 lg:pb-12 lg:pt-24">
             <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
               <h1 className="text-3xl font-bold sm:text-5xl md:text-6xl lg:text-7xl">
                 Turn TODOs into Notifications
