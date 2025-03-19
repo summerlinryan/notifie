@@ -13,8 +13,8 @@ import {
   YAxis,
 } from "recharts";
 
-import { CreateProjectDialog } from "~/components/create-project-dialog";
 import { ModeToggle } from "~/components/mode-toggle";
+import { CreateProject } from "~/components/projects/create-project-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 
 export default function DashboardPage() {
@@ -173,7 +173,7 @@ export default function DashboardPage() {
         </div>
       </main>
 
-      <CreateProjectDialog
+      <CreateProject
         open={createProjectOpen}
         onOpenChange={setCreateProjectOpen}
       />

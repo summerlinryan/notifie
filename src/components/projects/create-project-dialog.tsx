@@ -1,11 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Copy, Shield } from "lucide-react";
+import { Copy, FolderPlus, Shield } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Button } from "~/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +14,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "~/components/ui/dialog";
 import {
   Form,
@@ -27,12 +29,7 @@ import { Input } from "~/components/ui/input";
 import { Switch } from "~/components/ui/switch";
 import { Textarea } from "~/components/ui/textarea";
 import { api } from "~/trpc/react";
-import SubmitButton from "./submit-button";
-
-interface CreateProjectDialogProps {
-  open: boolean;
-  onOpenChange?: (open: boolean) => void;
-}
+import SubmitButton from "../submit-button";
 
 const formSchema = z.object({
   name: z
@@ -43,10 +40,8 @@ const formSchema = z.object({
   generateApiKey: z.boolean().default(true),
 });
 
-export function CreateProjectDialog({
-  open,
-  onOpenChange,
-}: CreateProjectDialogProps) {
+export function CreateProject() {
+  const [open, setOpen] = useState(false);
   const [apiKey, setApiKey] = useState<string | null>(null);
   const utils = api.useUtils();
 
@@ -57,7 +52,6 @@ export function CreateProjectDialog({
         if (data.apiKey) {
           setApiKey(data.apiKey);
         }
-
         utils.projects.getAll.invalidate();
       } else {
         toast.error(data.error || "Failed to create project");
@@ -78,6 +72,7 @@ export function CreateProjectDialog({
   });
 
   const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
     if (!newOpen) {
       form.reset({
         name: "",
@@ -85,10 +80,6 @@ export function CreateProjectDialog({
         generateApiKey: true,
       });
       setApiKey(null);
-    }
-
-    if (onOpenChange) {
-      onOpenChange(newOpen);
     }
   };
 
@@ -101,7 +92,13 @@ export function CreateProjectDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange} modal={true}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogTrigger asChild>
+        <Button className="gap-2 bg-indigo-600 hover:bg-indigo-700">
+          <FolderPlus className="h-4 w-4" />
+          New Project
+        </Button>
+      </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Create New Project</DialogTitle>

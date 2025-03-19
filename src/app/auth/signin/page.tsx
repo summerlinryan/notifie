@@ -49,110 +49,101 @@ export default async function SignInPage({
   const error = (await searchParams)?.error ?? "";
 
   return (
-    <main className="h-full bg-background px-4">
-      <div className="flex min-h-[calc(100vh-64px)] items-center justify-center">
-        <div className="w-full max-w-md overflow-hidden rounded-2xl border border-gray-700 bg-gray-800/70 shadow-xl backdrop-blur-sm">
-          <div className="border-b border-gray-700 bg-gray-700/50 px-8 py-5">
-            <h1 className="text-center text-2xl font-bold text-white">
-              Welcome
-            </h1>
-            <p className="mt-1 text-center text-sm text-gray-400">
-              Sign in to continue to your account
-            </p>
-          </div>
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+      <div className="w-full max-w-md overflow-hidden rounded-lg border bg-card shadow-lg">
+        <div className="border-b bg-muted/50 px-8 py-5">
+          <h1 className="text-center text-2xl font-bold">Welcome</h1>
+          <p className="mt-1 text-center text-sm text-muted-foreground">
+            Sign in to continue to your account
+          </p>
+        </div>
 
-          <div className="p-8">
-            {error && (
-              <div className="mb-6 rounded-md border border-red-900/30 bg-red-500/10 p-4 text-sm text-red-400">
-                <div className="flex items-center">
-                  <svg
-                    className="mr-2 h-5 w-5 text-red-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <span>
-                    {error === "OAuthSignin" &&
-                      "Error starting sign in process."}
-                    {error === "OAuthCallback" && "Error completing sign in."}
-                    {error === "OAuthAccountNotLinked" &&
-                      "Account already linked to another user."}
-                    {error === "Callback" && "Error during callback."}
-                    {error === "Default" && "Unable to sign in."}
-                  </span>
-                </div>
-              </div>
-            )}
-
-            <div className="space-y-4">
-              {providers.map((provider: any) => {
-                const config = getProviderConfig(provider.id);
-                const IconComponent = config?.icon;
-
-                return (
-                  <form
-                    key={provider.id}
-                    action={async () => {
-                      "use server";
-                      await signIn(provider.id, {
-                        redirectTo: callbackUrl,
-                      });
-                    }}
-                    className="w-full"
-                  >
-                    <button
-                      type="submit"
-                      key={provider.id}
-                      className={`flex w-full items-center justify-center rounded-md px-4 py-3 ${config?.style} ${config?.textColor} bg-indigo-600 shadow-sm transition-all duration-200 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-offset-2 focus:ring-offset-gray-800`}
-                    >
-                      {IconComponent && (
-                        <IconComponent className="mr-3 h-5 w-5" />
-                      )}
-                      <span className="text-base font-medium">
-                        Continue with {provider.name}
-                      </span>
-                    </button>
-                  </form>
-                );
-              })}
-            </div>
-
-            <div className="relative my-8">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-700"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="bg-gray-800/70 px-2 text-gray-400">
-                  Or continue with
+        <div className="p-8">
+          {error && (
+            <div className="mb-6 rounded-md border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
+              <div className="flex items-center">
+                <svg
+                  className="mr-2 h-5 w-5 text-destructive"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span>
+                  {error === "OAuthSignin" && "Error starting sign in process."}
+                  {error === "OAuthCallback" && "Error completing sign in."}
+                  {error === "OAuthAccountNotLinked" &&
+                    "Account already linked to another user."}
+                  {error === "Callback" && "Error during callback."}
+                  {error === "Default" && "Unable to sign in."}
                 </span>
               </div>
             </div>
+          )}
 
-            <div className="rounded-md border border-gray-700 bg-gray-800/50 p-4 text-center text-sm text-gray-400">
-              Email sign-in coming soon
+          <div className="space-y-4">
+            {providers.map((provider: any) => {
+              const config = getProviderConfig(provider.id);
+              const IconComponent = config?.icon;
+
+              return (
+                <form
+                  key={provider.id}
+                  action={async () => {
+                    "use server";
+                    await signIn(provider.id, { redirectTo: callbackUrl });
+                  }}
+                >
+                  <button
+                    type="submit"
+                    className={`flex w-full items-center justify-center rounded-md px-4 py-3 ${config?.style} ${config?.textColor} shadow-sm transition-all duration-200 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2`}
+                  >
+                    {IconComponent && (
+                      <IconComponent className="mr-3 h-5 w-5" />
+                    )}
+                    <span className="text-base font-medium">
+                      Continue with {provider.name}
+                    </span>
+                  </button>
+                </form>
+              );
+            })}
+          </div>
+
+          <div className="relative my-8">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="bg-card px-2 text-muted-foreground">
+                Or continue with
+              </span>
             </div>
           </div>
 
-          <div className="border-t border-gray-700 bg-gray-700/30 px-8 py-4 text-center text-xs text-gray-400">
-            By signing in, you agree to our{" "}
-            <a href="#" className="text-indigo-400 hover:text-indigo-300">
-              Terms of Service
-            </a>{" "}
-            and{" "}
-            <a href="#" className="text-indigo-400 hover:text-indigo-300">
-              Privacy Policy
-            </a>
-            .
+          <div className="rounded-md border bg-muted/50 p-4 text-center text-sm text-muted-foreground">
+            Email sign-in coming soon
           </div>
         </div>
+
+        <div className="border-t bg-muted/30 px-8 py-4 text-center text-xs text-muted-foreground">
+          By signing in, you agree to our{" "}
+          <a href="#" className="text-primary hover:text-primary/90">
+            Terms of Service
+          </a>{" "}
+          and{" "}
+          <a href="#" className="text-primary hover:text-primary/90">
+            Privacy Policy
+          </a>
+          .
+        </div>
       </div>
-    </main>
+    </div>
   );
 }
